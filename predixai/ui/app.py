@@ -7,13 +7,17 @@ from datetime import datetime
 from predixai.core.engine import MarketEngine
 
 # Configuration
-st.set_page_config(page_title="PredixNaija: Predict & Earn (Solana) 🏟️🇳🇬", layout="wide", page_icon="🏟️")
+st.set_page_config(page_title="PredixNaija: Devnet Beta 🏟️🇳🇬", layout="wide", page_icon="🏟️")
 
 # Initialize Engine
 engine = MarketEngine()
 
-# NGN/SOL Rate (Stub)
-SOL_TO_NGN = 1250000.0 # 1.25M Naira per SOL (Sample rate)
+# DEVNET STATUS
+st.sidebar.warning("⚠️ PHASE: DEVNET BETA (Testing Only)")
+st.sidebar.info("Predict with TEST SOL - No Real Money.")
+
+# NGN/SOL Rate (Stub - Updated to reflect real-time approx for ₦)
+SOL_TO_NGN = 22000.0 * 1500.0 # ~₦33,000,000 per SOL (based on market)
 
 # Simulated Wallet (In production, this would be a real Solana wallet)
 if "wallet_sol" not in st.session_state:

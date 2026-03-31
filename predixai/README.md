@@ -21,24 +21,17 @@
 - **Frontend**: Streamlit Marketplace
 - **Data Engine**: DuckDuckGo (Free-tier search)
 
-## 📦 Local Setup
+## 🚀 Devnet Beta Phase (Safe Testing)
 
-1.  **Clone and Install**
-    ```bash
-    git clone <repo-url>
-    cd predixai
-    pip install -r requirements.txt
-    ```
+We are currently in **Devnet Beta**. This means:
+1. Users predict using **Testnet SOL** (No real value).
+2. We are testing the **AI Naija Curator** and the **Market AMM** logic.
+3. Your deposits and earnings are simulated for performance testing.
 
-2.  **Configure Solana Keys**
-    - `SOLANA_RPC_URL`: https://api.mainnet-beta.solana.com
-    - `SOLANA_PRIVATE_KEY`: Your Solana wallet secret.
-    - `GROQ_API_KEY`: For the Naija-focused AI curator.
-
-3.  **Launch**
-    ```bash
-    streamlit run ui/app.py
-    ```
+### 🛠 How to participate:
+1. Set your Phantom/Solflare wallet to **Devnet**.
+2. Get free test SOL from the [Solana Faucet](https://faucet.solana.com/).
+3. Connect and start predicting on Naija events!
 
 ## 🛡 Disclaimer
 Predict responsibly. Not a gambling site; it's a decentralized information market.
