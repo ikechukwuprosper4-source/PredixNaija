@@ -11,14 +11,14 @@ from datetime import datetime
 class ProposedMarket(BaseModel):
     """Structured output for the AI Curator to suggest a new market."""
     title: str = Field(description="A catchy, concise title for the prediction event.")
-    category: str = Field(description="Politics, Crypto, Entertainment, or Sports.")
+    category: str = Field(description="Politics, Economy, Entertainment, or Sports.")
     description: str = Field(description="A brief, clear description of the event.")
     end_date: str = Field(description="Resolution date in YYYY-MM-DD format.")
     reasoning: str = Field(description="Why this market is relevant now.")
 
 class CuratorAgent:
     """
-    AI Market Curator Agent responsible for scanning the news 
+    Naija Market Curator Agent responsible for scanning Nigerian news 
     and proposing high-interest prediction markets for users.
     """
     def __init__(self, model_name: str = "llama3-70b-8192"):
@@ -31,14 +31,14 @@ class CuratorAgent:
             
         self.search_tool = DuckDuckGoSearchRun()
 
-    def discover_markets(self, topic: str = "world news and finance") -> List[ProposedMarket]:
+    def discover_markets(self, topic: str = "Nigerian Politics, Economy and Sports") -> List[ProposedMarket]:
         """
-        Scans news for high-interest events and returns proposed markets.
+        Scans Nigerian news (Punch, Vanguard, Vanguard, X-Naija) for markets.
         """
-        logger.info(f"AI Curator scanning news for topic: {topic}")
+        logger.info(f"Naija Curator scanning news for topic: {topic}")
         
-        # Step 1: Perform Web Search (Free)
-        query = f"breaking news and high-interest upcoming events in {topic}"
+        # Step 1: Perform Web Search (Free) - Focus on Naija sources
+        query = f"breaking news and trending events in {topic} from Nigerian news sources like Punch, Vanguard, and X"
         try:
             news_data = self.search_tool.run(query)
         except Exception as e:
@@ -49,23 +49,23 @@ class CuratorAgent:
         if not self.llm:
             # Fallback for simulation
             return [ProposedMarket(
-                title="Will Bitcoin reach $100k by 2026?",
-                category="Crypto",
-                description="Analysis of BTC trends suggests a potential breakout.",
-                end_date="2026-12-31",
-                reasoning="High-interest topic with high volatility."
+                title="Will the Naira hit 1400/$ by June?",
+                category="Economy",
+                description="Analysis of current CBN policy and exchange rates.",
+                end_date="2026-06-30",
+                reasoning="High-interest topic for every Nigerian today."
             )]
 
         prompt = ChatPromptTemplate.from_template("""
-        You are a visionary Prediction Market Curator. 
-        Analyze the following news data and propose THREE high-interest prediction markets.
+        You are the PredixNaija Visionary Curator. 
+        Analyze the following news data from Nigeria and propose THREE high-interest prediction markets.
         
         News Data: {data}
         
         Criteria for a good market:
-        1. It must be binary (YES or NO outcome).
-        2. It must have a clear, verifiable resolution date.
-        3. It must be interesting enough to attract 'Predict & Earn' users.
+        1. Focused on Nigeria (Politics, Economy, NPFL/EPL, Nollywood/Afrobeats).
+        2. Binary outcome (YES or NO).
+        3. Clear, verifiable resolution.
         
         Output format: Valid JSON as a list of ProposedMarket schemas.
         """)
@@ -80,10 +80,10 @@ class CuratorAgent:
 
     def resolve_market(self, market_title: str) -> str:
         """
-        AI Oracle logic: Verify if an event has occurred (YES or NO).
+        AI Oracle logic: Verify Nigerian events (YES or NO).
         """
         logger.info(f"AI Oracle resolving market: {market_title}")
-        query = f"Has this event occurred yet? {market_title}"
+        query = f"Has this event occurred yet? {market_title} site:punchng.com OR site:vanguardngr.com"
         news_verification = self.search_tool.run(query)
         
         # Simplistic LLM check (stub)

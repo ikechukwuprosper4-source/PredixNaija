@@ -4,150 +4,151 @@ import os
 import json
 import time
 from datetime import datetime
-from predixmarket.core.engine import MarketEngine
+from predixai.core.engine import MarketEngine
 
 # Configuration
-st.set_page_config(page_title="PredixMarket: Predict & Earn 🏟️", layout="wide", page_icon="🏟️")
+st.set_page_config(page_title="PredixNaija: Predict & Earn (Solana) 🏟️🇳🇬", layout="wide", page_icon="🏟️")
 
 # Initialize Engine
 engine = MarketEngine()
 
-# Simulated Wallet (In production, this would be a real Web3 wallet)
-if "wallet_balance" not in st.session_state:
-    st.session_state.wallet_balance = 1000.0
+# NGN/SOL Rate (Stub)
+SOL_TO_NGN = 1250000.0 # 1.25M Naira per SOL (Sample rate)
+
+# Simulated Wallet (In production, this would be a real Solana wallet)
+if "wallet_sol" not in st.session_state:
+    st.session_state.wallet_sol = 5.0 # 5.0 SOL
 if "predictions" not in st.session_state:
     st.session_state.predictions = []
 
 # Sidebar Navigation
 with st.sidebar:
-    st.title("🏟️ PredixMarket")
-    st.image("https://img.icons8.com/nolan/128/prediction.png", width=100)
+    st.title("🏟️ PredixNaija")
+    st.image("https://img.icons8.com/nolan/128/nigeria.png", width=100)
     st.divider()
-    st.metric("My Balance", f"${st.session_state.wallet_balance:.2f} USDC")
+    
+    # Wallet Info
+    st.metric("SOL Balance", f"{st.session_state.wallet_sol:.2f} SOL", 
+              f"₦{(st.session_state.wallet_sol * SOL_TO_NGN):,.0f} NGN")
+    
     st.divider()
-    st.subheader("Your Profile")
-    st.write("Mavitan CEO")
-    st.caption("Pro Predictor 🎖️")
+    st.subheader("Your Naija Profile")
+    st.write("Mavitan CEO 🇳🇬")
+    st.caption("Solana Whale 🐋")
     st.divider()
-    if st.button("🔌 Reconnect Wallet", use_container_width=True):
-        st.success("Wallet connected via Polygon.")
+    if st.button("🔌 Connect Phantom / Solflare", use_container_width=True):
+        st.success("Wallet connected via Solana Mainnet.")
 
 # Main Dashboard
-st.title("⛓️ Mavitan PredixMarket: Decentralized Predictions")
-st.caption("AI-powered prediction platform where you earn for accuracy.")
+st.title("⛓️ PredixNaija: Predict on Local Events")
+st.caption("AI-powered prediction platform for Nigerians. Predict on Politics, Sports, and Culture.")
 
 # 1. Platform Tabs
-tab_browse, tab_my, tab_create = st.tabs(["🔍 Browse Markets", "📈 My Predictions", "🤖 AI Market Creator"])
+tab_browse, tab_my, tab_create = st.tabs(["🔍 Browse Naija Markets", "📉 My Positions", "🤖 Naija Curator"])
 
 # Tab 1: Browse Markets
 with tab_browse:
-    st.header("Active Prediction Events")
+    st.header("What's Trending in Nigeria?")
     
     # Filter by Category
-    category = st.selectbox("Category", ["All", "Politics", "Crypto", "Entertainment", "Sports"])
+    category = st.radio("Category", ["All", "Naija Politics", "NPFL/Sports", "Entertainment", "Economy"], horizontal=True)
     
     # Load markets from Engine
     markets = engine.markets
     active_markets = [m for m in markets.values() if m["status"] == "OPEN"]
     
     if not active_markets:
-        st.info("No active markets. Ask the AI Curator to generate some!")
+        st.info("No active markets. The Curator is scanning Punch and Vanguard...")
     else:
         # Display as grid
         cols = st.columns(2)
         for i, m in enumerate(active_markets):
             with cols[i % 2]:
                 with st.container(border=True):
-                    st.subheader(f"{m['title']} (Closing: {m['end_date']})")
+                    st.subheader(f"{m['title']} 🇳🇬")
                     st.write(m['description'])
+                    st.caption(f"Resolution Date: {m['end_date']}")
                     
                     prices = engine.get_price(m['id'])
                     
-                    # Columns for Yes/No prices
+                    # Columns for Yes/No prices in SOL
                     p1, p2 = st.columns(2)
                     with p1:
-                        st.metric("YES Price", f"${prices['yes']:.2f}", help="Current cost of a YES share.")
+                        st.metric("YES Price", f"{prices['yes']:.2f} SOL", 
+                                  f"₦{(prices['yes'] * SOL_TO_NGN):,.0f}")
                     with p2:
-                        st.metric("NO Price", f"${prices['no']:.2f}", delta_color="inverse")
+                        st.metric("NO Price", f"{prices['no']:.2f} SOL", 
+                                  f"₦{(prices['no'] * SOL_TO_NGN):,.0f}", delta_color="inverse")
                     
                     # Prediction Actions
-                    bet_amount = st.number_input(f"Bet Amount (USDC) for {m['id']}", 10.0, step=10.0, key=f"amt_{m['id']}")
+                    bet_amount = st.number_input(f"Bet Amount (SOL) for {m['id']}", 0.1, step=0.1, key=f"amt_{m['id']}")
                     col_b1, col_b2 = st.columns(2)
                     
                     with col_b1:
-                        if st.button(f"Predict YES on {m['id']}", type="primary", use_container_width=True):
-                            if st.session_state.wallet_balance >= bet_amount:
+                        if st.button(f"Naija YES on {m['id']}", type="primary", use_container_width=True):
+                            if st.session_state.wallet_sol >= bet_amount:
                                 engine.predict(m['id'], "YES", bet_amount, "user_1")
-                                st.session_state.wallet_balance -= bet_amount
+                                st.session_state.wallet_sol -= bet_amount
                                 st.session_state.predictions.append({
                                     "market": m['title'],
                                     "side": "YES",
-                                    "amount": bet_amount,
-                                    "entry_price": prices['yes'],
+                                    "amount_sol": bet_amount,
+                                    "entry_sol": prices['yes'],
                                     "time": datetime.now().strftime("%H:%M:%S")
                                 })
-                                st.success("Prediction Placed! 🚀")
+                                st.success("Prediction Placed on Solana! 🚀")
                                 st.rerun()
-                            else:
-                                st.error("Insufficient Balance.")
                                 
                     with col_b2:
-                        if st.button(f"Predict NO on {m['id']}", use_container_width=True):
-                            if st.session_state.wallet_balance >= bet_amount:
+                        if st.button(f"Naija NO on {m['id']}", use_container_width=True):
+                            if st.session_state.wallet_sol >= bet_amount:
                                 engine.predict(m['id'], "NO", bet_amount, "user_1")
-                                st.session_state.wallet_balance -= bet_amount
+                                st.session_state.wallet_sol -= bet_amount
                                 st.session_state.predictions.append({
                                     "market": m['title'],
                                     "side": "NO",
-                                    "amount": bet_amount,
-                                    "entry_price": prices['no'],
+                                    "amount_sol": bet_amount,
+                                    "entry_sol": prices['no'],
                                     "time": datetime.now().strftime("%H:%M:%S")
                                 })
-                                st.success("Prediction Placed! 🚀")
+                                st.success("Prediction Placed on Solana! 🚀")
                                 st.rerun()
 
 # Tab 2: My Predictions
 with tab_my:
-    st.header("My Portfolio & Earnings")
+    st.header("My Portfolio & Solana Earnings")
     if not st.session_state.predictions:
-        st.write("You haven't placed any predictions yet.")
+        st.write("No active predictions in your portfolio.")
     else:
         df_p = pd.DataFrame(st.session_state.predictions)
         st.table(df_p)
-        
-        # Simulated Earnings Chart
-        st.subheader("Estimated Earnings Projection")
-        st.line_chart([100, 110, 125, 140, 135, 150]) # Dummy data
 
-# Tab 3: AI Market Curator (Admin)
+# Tab 3: Naija Market Curator
 with tab_create:
-    st.header("🤖 Autonomous Market Curator")
-    st.write("Our AI Agent scans global news and proposes new markets for users to earn from.")
+    st.header("🇳🇬 Naija AI Curator")
+    st.write("Automated discovery of Nigerian trending topics to build new markets.")
     
-    if st.button("🚀 Trigger AI Market Discovery", type="primary"):
-        with st.status("AI Agent is scanning the news..."):
-            st.write("Connecting to Groq (Llama-3)...")
-            st.write("Analyzing current news for 'high-volatility events'...")
+    if st.button("🇳🇬 Run Naija News Discovery", type="primary"):
+        with st.status("AI Agent is scanning Punch, Vanguard, and Linda Ikeji..."):
+            st.write("Analyzing Groq context for 'Nigeria Trends'...")
             time.sleep(2)
-            st.write("Analyzing social sentiment on X/Twitter...")
-            time.sleep(1)
             
-            # Simulated AI Market Proposals
-            new_market = {
-                "title": "Will Bitcoin reach $100,000 by May 2026?",
-                "category": "Crypto",
-                "description": "BTC has been trending upwards. Will it break the legendary $100k barrier?",
-                "end_date": "2026-05-31"
+            # Simulated Naija-centric Markets
+            naija_market = {
+                "title": "Will the Naira reach ₦1,400 per 1$ by June 2026?",
+                "category": "Economy",
+                "description": "Analyzing current inflation and CBN policies to predict the exchange rate.",
+                "end_date": "2026-06-30"
             }
             
-            st.success("New Market Discovered!")
-            st.json(new_market)
+            st.success("New Naija Market Found!")
+            st.json(naija_market)
             
-            if st.button("Confirm & Deploy Market"):
-                mid = engine.create_market(new_market['title'], new_market['category'], new_market['description'], new_market['end_date'])
-                st.success(f"Market Deploy Successful! (ID: {mid})")
+            if st.button("🇳🇬 Deploy Market to Solana Marketplace"):
+                mid = engine.create_market(naija_market['title'], naija_market['category'], naija_market['description'], naija_market['end_date'])
+                st.success(f"Naija Market Live! (ID: {mid})")
                 st.rerun()
 
 # 4. Global Footer
 st.divider()
-st.caption("Mavitan PredixMarket © 2026. Built by elite AI engineers.")
+st.caption("PredixNaija © 2026. Built on Solana for Nigerians. Powered by Mavitan AI.")

@@ -1,3 +1,8 @@
+# Solana SDK
+solana
+solders
+anchorpy
+
 # Multi-agent Framework
 langchain
 langchain-openai
