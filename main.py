@@ -5,8 +5,8 @@ from loguru import logger
 from dotenv import load_dotenv
 
 # Local Agent Imports
-from predixmarket.agents.curator_agent import CuratorAgent
-from predixmarket.core.engine import MarketEngine
+from agents.curator_agent import CuratorAgent
+from core.engine import MarketEngine
 
 # Load environment variables
 load_dotenv()

@@ -28,6 +28,7 @@ EXPOSE 8501
 
 # Define environment variables (should be overridden by docker-compose or -e)
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
 
 # Command to run the dashboard
 CMD ["streamlit", "run", "ui/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

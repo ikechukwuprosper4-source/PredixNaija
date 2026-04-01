@@ -9,7 +9,7 @@ class MarketEngine:
     A simple Constant Product Market Maker (CPMM) logic for Yes/No predictions.
     This manages the internal state of the PredixMarket platform.
     """
-    def __init__(self, data_file: str = "predixmarket/data/markets.json"):
+    def __init__(self, data_file: str = "data/markets.json"):
         self.data_file = data_file
         self.markets = self._load_markets()
 
