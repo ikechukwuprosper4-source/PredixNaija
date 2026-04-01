@@ -6,6 +6,7 @@ import time
 import hashlib
 from datetime import datetime
 from core.engine import MarketEngine
+from utils.wallet import solana_connect_button
 
 # --- APP CONFIG & STYLING ---
 st.set_page_config(
@@ -14,6 +15,12 @@ st.set_page_config(
     page_icon="🏗️",
     initial_sidebar_state="collapsed"
 )
+
+# Check for URL parameters (Wallet Bridge)
+if "wallet" in st.query_params:
+    st.session_state.wallet_address = st.query_params["wallet"]
+    # Clear parameter to prevent loop, but stay on page
+    # st.query_params.clear() # Optional
 
 # Kalshi-inspired Minimalist Styling
 st.markdown("""
@@ -118,27 +125,27 @@ engine = MarketEngine()
 if "wallet_address" not in st.session_state:
     st.session_state.wallet_address = None
 
-# --- AUTH LAYER (Wallet Connection Simulation) ---
+# --- AUTH LAYER (Wallet Connection) ---
 def connect_wallet():
     with st.container():
         st.markdown("<div style='text-align: center; padding: 100px 0;'>", unsafe_allow_html=True)
         st.markdown("<h1>🏗️ PredixNaija</h1>", unsafe_allow_html=True)
         st.markdown("<p style='color: #666;'>Predict on Nigeria's Future. Earn on Solana.</p>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         
-        wallet = st.text_input("Enter Solana Wallet Address to Connect", placeholder="e.g., 5v6N...x2Yz")
-        if st.button("Connect Phantom", use_container_width=True, type="primary"):
-            if len(wallet) > 30: # Basic validation
-                st.session_state.wallet_address = wallet
-                engine.register_user(wallet)
-                st.rerun()
-            else:
-                st.error("Please enter a valid Solana wallet address.")
+        # Real Wallet Signing Component
+        solana_connect_button()
+        
+        st.markdown("<p style='font-size: 0.8rem; color: #BBB;'>Trusted by 5k+ Naija Predictors</p>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- MAIN APP INTERFACE ---
 if not st.session_state.wallet_address:
     connect_wallet()
 else:
+    # Ensure user is registered in engine
+    engine.register_user(st.session_state.wallet_address)
+    
     # Header
     st.markdown(f"""
         <div class='main-header'>
